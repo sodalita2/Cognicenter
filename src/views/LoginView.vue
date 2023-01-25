@@ -1,6 +1,8 @@
 <script setup>
 import { AuthPinia } from "../stores/AuthPinia";
 import { ref } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import ClipLoader from "vue-spinner/src/ClipLoader.vue"
 import axios from "axios";
 
 const Auth = AuthPinia();
@@ -14,7 +16,16 @@ function EsqueciSenhaToggle() {
 const loginEmail = ref(null);
 const loginSenha = ref(null);
 
+const router = useRouter();
+
+console.log(router);
+
+const isLoading = ref(false);
+
+
 function Login() {
+
+    isLoading.value = true;
 
     // Implementar filtro de input **
 
@@ -24,13 +35,11 @@ function Login() {
     },
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).then( (response) => {
-        
-        console.log(this.$router);
 
         if ( response.data == "1" ) {
             Auth.logIn();
-            console.log(response.data);
-            console.log(Auth.isLogged);
+            router.push({path: '/dashboard'});
+            isLoading.value = false;
         } else if ( response.data == "0" ) {
 
         } else if ( response.data == "-1" ) {
@@ -41,12 +50,18 @@ function Login() {
 
 }
 
+
+
 </script>
 
 <template>
 
     <!-- Wrapper -->
     <div class="w-[100vw] h-[100vh] bg-[#F3F0F0] flex justify-center items-center shadow-headerShadow overflow-hidden">
+        <!-- Loading Layer -->
+        <div v-show="isLoading" class="absolute h-full w-full bg-[#FF4365] z-10 flex justify-center items-center opacity-40">
+            <clip-loader color="#FFB630" size="300px"></clip-loader>
+        </div>
         <!-- Form Container -->
         <div class="mb-20 w-[70%] h-[80%] bg-white flex flex-col align-center relative">
             <!-- Esqueci Senha Popup (click em esqueci minha senha) -->
