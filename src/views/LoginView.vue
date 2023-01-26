@@ -1,6 +1,6 @@
 <script setup>
 import { AuthPinia } from "../stores/AuthPinia";
-import { ref } from "vue";
+import { ref, VueElement } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ClipLoader from "vue-spinner/src/ClipLoader.vue"
 import axios from "axios";
@@ -18,9 +18,10 @@ const loginSenha = ref(null);
 
 const router = useRouter();
 
-console.log(router);
-
 const isLoading = ref(false);
+
+//const $cookies = inject('$cookies');
+console.log($cookies.isKey('sessionToken'));
 
 
 function Login() {
@@ -36,7 +37,8 @@ function Login() {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).then( (response) => {
 
-        if ( response.data == "1" ) {
+        if ( response.data["code"] == "1" ) {
+            $cookies.set('sessionToken', response.data["token"]);
             Auth.logIn();
             router.push({path: '/dashboard'});
             isLoading.value = false;

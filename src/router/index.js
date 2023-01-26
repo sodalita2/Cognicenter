@@ -35,11 +35,11 @@ router.beforeEach( (to) => {
 
   const Auth = AuthPinia();
 
-  const localToken = localStorage.getItem("sessionToken");
+  // npm i vue-cookies => define cookies de token de sessao
 
-  if (to.meta.requiresAuth && !Auth.isLogged && !localToken ) {
+  if (to.meta.requiresAuth && !Auth.isLogged && !$cookies.isKey('sessionToken') ) {
     return '/login'
-  } else if (to.meta.requiresAuth && !Auth.isLogged && localToken ) {
+  } else if (to.meta.requiresAuth && !Auth.isLogged && $cookies.isKey('sessionToken') ) {
     Auth.logIn();
     return true;
   } else {
