@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { AuthPinia } from "../stores/AuthPinia";
+import { LoadingPinia } from "../stores/LoadingPinia";
 
 
 // local variable Auth = AuthPinia Store
@@ -24,16 +25,23 @@ const router = createRouter({
     {
       path: "/dashboard",
       name: "Dashboard",
-      component: () => import('../views/ContatoView.vue'),
+      component: () => import('../views/DashboardView.vue'),
       meta: { requiresAuth: true },
     }
   ],
 });
 
 
+
+
+
 router.beforeEach( (to) => {
 
   const Auth = AuthPinia();
+
+  const Loading = LoadingPinia();
+
+  Loading.isLoading = true;
 
   // npm i vue-cookies => define cookies de token de sessao
 
@@ -43,6 +51,9 @@ router.beforeEach( (to) => {
     Auth.logIn();
     return true;
   } else {
+    if (to.name == "Login") {
+      return '/dashboard';
+    }
     // mesma coisa que next()
     return true;
   }

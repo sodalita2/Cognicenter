@@ -9,12 +9,13 @@ export const AuthPinia = defineStore("AuthPinia", () => {
 
     const userID = ref("");
 
-    const userName = ref("");
+    const userEmail = ref("");
 
-    function logIn() {
-        isLogged.value = !isLogged.value;   
+    function logIn($userID) {
+        isLogged.value = true;
+        userID.value = $userID;
     }
 
 
-    return { isLogged, sessionToken, userID, userName, logIn };
+    return { isLogged, sessionToken, userID, userEmail, logIn };
 });

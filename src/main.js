@@ -14,4 +14,6 @@ app.use(createPinia());
 app.use(router);
 app.use(VueCookies, { expires: '5d' });
 
+
+
 app.mount("#app");

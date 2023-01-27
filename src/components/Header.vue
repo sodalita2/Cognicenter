@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router';
 
 
 
+
 const PagesToShowHeader = ['/','/sobre','/contato'];
 
 </script>

@@ -4,8 +4,15 @@ import { ref, VueElement } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ClipLoader from "vue-spinner/src/ClipLoader.vue"
 import axios from "axios";
+import { LoadingPinia } from "../stores/LoadingPinia";
+
+
 
 const Auth = AuthPinia();
+
+const Loading = LoadingPinia();
+Loading.isLoading = false;
+
 
 const EsqueciMinhaSenhaOpen = ref(false);
 
@@ -18,15 +25,13 @@ const loginSenha = ref(null);
 
 const router = useRouter();
 
-const isLoading = ref(false);
+
 
 //const $cookies = inject('$cookies');
-console.log($cookies.isKey('sessionToken'));
+//console.log($cookies.isKey('sessionToken'));
 
 
 function Login() {
-
-    isLoading.value = true;
 
     // Implementar filtro de input **
 
@@ -39,9 +44,9 @@ function Login() {
 
         if ( response.data["code"] == "1" ) {
             $cookies.set('sessionToken', response.data["token"]);
-            Auth.logIn();
+            Auth.logIn(response.data["userID"]);
+            Loading.isLoading = true;
             router.push({path: '/dashboard'});
-            isLoading.value = false;
         } else if ( response.data == "0" ) {
 
         } else if ( response.data == "-1" ) {
@@ -53,7 +58,6 @@ function Login() {
 }
 
 
-
 </script>
 
 <template>
@@ -61,7 +65,7 @@ function Login() {
     <!-- Wrapper -->
     <div class="w-[100vw] h-[100vh] bg-[#F3F0F0] flex justify-center items-center shadow-headerShadow overflow-hidden">
         <!-- Loading Layer -->
-        <div v-show="isLoading" class="absolute h-full w-full bg-[#FF4365] z-10 flex justify-center items-center opacity-40">
+        <div v-show="Loading.isLoading" class="absolute h-full w-full bg-[#FF4365] z-10 flex justify-center items-center opacity-40">
             <clip-loader color="#FFB630" size="300px"></clip-loader>
         </div>
         <!-- Form Container -->
