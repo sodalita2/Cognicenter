@@ -13,6 +13,13 @@ const Loading = LoadingPinia();
 Loading.isLoading = false;
 
 
+const EsqueciMinhaSenhaOpen = ref(false);
+
+function EsqueciSenhaToggle() {
+    console.log(SalvarEmailCheckbox.value.checked);
+    EsqueciMinhaSenhaOpen.value = !EsqueciMinhaSenhaOpen.value;
+}
+
 const loginEmail = ref(null);
 const loginSenha = ref(null);
 
@@ -21,17 +28,13 @@ const router = useRouter();
 const SalvarEmailCheckbox = ref(null);
 
 
-const EsqueciMinhaSenhaOpen = ref(false);
-
-function EsqueciSenhaToggle() {
-    console.log(SalvarEmailCheckbox.value.checked);
-    EsqueciMinhaSenhaOpen.value = !EsqueciMinhaSenhaOpen.value;
-}
+//const $cookies = inject('$cookies');
+//console.log($cookies.isKey('sessionToken'));
 
 
 function Login() {
 
-// Implementar filtro de input **
+    // Implementar filtro de input **
 
     axios.get(`https://api.cognicenter.com.br/Auth.php?email=${loginEmail.value.value}`, {
     params: {
@@ -58,14 +61,6 @@ function Login() {
     })
 
 }
-
-
-
-//const $cookies = inject('$cookies');
-//console.log($cookies.isKey('sessionToken'));
-
-
-
 
 // CHECAGENS PRE RENDER
 if ( $cookies.isKey("savedEmail") ) {

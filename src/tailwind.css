@@ -6,7 +6,15 @@
 @tailwind utilities;
 
 
-
+@layer components {
+    .purple-linear {
+        background: linear-gradient(270.01deg, rgba(255, 67, 101, 0.8) 2.08%, #4B326A 90.82%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+}
 
 /* Header Animations */
 @keyframes NavHoverShow {
