@@ -50,6 +50,7 @@ function AddProfile() {
         Loading.isLoading = false;
     });
 
+    //texto
 }
 
 function OpenCadastraProfile() {
