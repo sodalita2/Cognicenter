@@ -32,6 +32,24 @@ function LoadProfiles() {
 
 function AddProfile() {
 
+    Loading.isLoading = true;
+
+    axios.put(`https://api.cognicenter.com.br/Auth.php?cadastraprofile=1`, {
+    data: {
+        PRIMEIRO_NOME: AddProfileInputPrimeiroNome.value.value,
+        SOBRENOME: AddProfileInputSobrenome.value.value,
+        SENHA_PROFILE: AddProfileInputSenha.value.value,
+        COR_PROFILE: AddProfileInputCor.value.value,
+        ID_CONTA_CORPORATIVA: $cookies.get('userID'),
+    },                      
+    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Methods': 'PUT', 'Access-Control-Allow-Origin': '*' }
+    }).then( (response) => {
+
+        console.log(response);
+
+        Loading.isLoading = false;
+    });
+
 }
 
 function OpenCadastraProfile() {
@@ -46,6 +64,11 @@ function OpenCadastraProfile() {
 const Loading = LoadingPinia();
 
 //Loading.isLoading = false;
+
+const AddProfileInputPrimeiroNome = ref(null);
+const AddProfileInputSobrenome = ref(null);
+const AddProfileInputSenha = ref(null);
+const AddProfileInputCor = ref(null);
 
 
 
@@ -92,17 +115,20 @@ console.log(Profiles)
 
         <!-- Criar Profile Page -->
         <div v-if="ProfileStateNow == 'CadastraProfiles'" class="w-[70%] h-[80%] flex flex-col justify-center items-center bg-white">
-            <span class="w-full h-[20%] flex justify-center items-center font-lexend text-[32px] font-[400]"> Cadastrar Perfil </span>
-            <div class="w-[40%] h-[60%] flex  flex-col justify-center items-center rounded-xl border-2 border-grey font-nunito">
+            <span class="w-full h-[70px] flex justify-center items-center font-lexend text-[32px] font-[500] tracking-tight"> Cadastrar Perfil </span>
+            <div class="w-[500px] h-[570px] flex  flex-col justify-center items-center rounded-xl border-2 border-grey font-nunito">
                 <span class="w-[380px] h-auto text-[19px]"> Primeiro Nome: </span>
-                <input type="text" class="w-[380px] h-[33px] text-[19px] border-[1px] border-black opacity-50 outline-0 pl-[1px] mb-4">
+                <input ref="AddProfileInputPrimeiroNome" type="text" class="w-[380px] h-[33px] text-[19px] border-[1px] border-black opacity-50 outline-0 pl-[1px] mb-4">
                 <span class="w-[380px] h-auto text-[19px]"> Sobrenome: </span>
-                <input type="text" class="w-[380px] h-[33px] text-[19px] border-[1px] border-black opacity-50 outline-0 pl-[1px] mb-4">
+                <input ref="AddProfileInputSobrenome" type="text" class="w-[380px] h-[33px] text-[19px] border-[1px] border-black opacity-50 outline-0 pl-[1px] mb-4">
                 <span class="w-[380px] h-auto text-[19px]"> Senha do perfil: </span>
-                <input type="password" class="w-[380px] h-[33px] text-[19px] border-[1px] border-black opacity-50 outline-0 pl-[1px] mb-4">
-                <span class="w-[380px] h-[100px]">
-
+                <input ref="AddProfileInputSenha" type="password" class="w-[380px] h-[33px] text-[19px] border-[1px] border-black opacity-50 outline-0 pl-[1px] mb-4">
+                <span class="w-[380px] h-auto text-[19px]"> Escolha cor do perfil: </span>
+                <span class="w-[380px] h-auto flex flex-row">
+                    <input ref="AddProfileInputCor" type="color" value="#FFB630" class="h-[50px] w-[70px]">
                 </span>
+                <div @click="AddProfile()" class="mt-6 w-[380px] h-[50px] flex justify-center items-center bg-[#FF4365] text-white
+                text-[26px] font-[700] font-nunito tracking-tight cursor-pointer"> Criar Perfil </div>
             </div>
         </div>
 
