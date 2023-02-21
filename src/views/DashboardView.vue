@@ -1,5 +1,5 @@
 <script setup>
-import { ref, VueElement } from "vue";
+import { ref, VueElement, onMounted, toRaw } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ClipLoader from "vue-spinner/src/ClipLoader.vue"
 import axios from "axios";
@@ -16,13 +16,21 @@ function LoadProfiles() {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).then( (response) => {
 
+        if ( Profiles.value.length > 0 ) {
+
+            Profiles.value = [];
+
+        }
+
         if ( response.data.length > 0 ) {
 
             response.data.forEach(profile => {
-                Profiles.push(profile);
+                Profiles.value.push(profile);
             });
 
         }
+
+        // nao adianta mudar cor dos perfil aqui, pq aqui n foi carregado no DOM ainda
 
         Loading.isLoading = false;
 
@@ -45,7 +53,9 @@ function AddProfile() {
     headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Methods': 'PUT', 'Access-Control-Allow-Origin': '*' }
     }).then( (response) => {
 
-        console.log(response);
+        CloseCadastraProfile();
+
+        LoadProfiles();
 
         Loading.isLoading = false;
     });
@@ -56,9 +66,18 @@ function AddProfile() {
 function OpenCadastraProfile() {
     ProfileStateNow.value = 'CadastraProfiles';
 }
+function CloseCadastraProfile() {
+    ProfileStateNow.value = 'MostraProfiles';
+}
 
 
+// @param => name: String
+// @return => String
+function GetFirstLetterFromName($name) {
 
+    return ($name.slice(0,1)).toUpperCase();
+
+}
 
 
 
@@ -73,7 +92,7 @@ const AddProfileInputCor = ref(null);
 
 
 
-const Profiles = [];
+const Profiles = ref([]);
 
 LoadProfiles();
 
@@ -83,7 +102,18 @@ const DashboardStateNow = ref('Perfil');
 const ProfileStates = ['MostraProfiles','CadastraProfiles'];
 const ProfileStateNow = ref('MostraProfiles');
 
-console.log(Profiles)
+/*onMounted(() => {
+    
+    var arr = Profiles.value;
+    console.log(Object.keys(arr));
+
+
+});*/
+
+//console.log(Profiles)
+
+
+
 </script>
 
 <template>
@@ -97,10 +127,20 @@ console.log(Profiles)
         <div class="w-full h-full absolute bg-[#FF4365]"></div>
         <!-- Profiles Container -->
         <div v-if="ProfileStateNow == 'MostraProfiles'" class="w-[90%] h-[400px] flex flex-row justify-center items-start">
-            <div v-for="profile in Profiles" class="w-[270px] h-[300px] mr-8 flex flex-col justify-center items-center rounded-2xl bg-white">
-
+            <!-- Perfil Box -->
+            <div v-for="profile in Profiles" class="w-[270px] h-[300px] mr-8 flex flex-col rounded-2xl bg-white cursor-pointer">
+                <!-- Foto + First name Container -->
+                <div class="w-full h-[55%] pt-2 flex flex-col items-center justify-center">
+                    <span :id="`Profile${profile.PROFILE_ID}`" v-bind:style="{'background-color': profile.COR_PROFILE}" class="w-[47%] h-[64%] flex justify-center
+                    items-center bg-white rounded-[50%] text-white text-[39px] font-nunito font-[800]">
+                        {{ GetFirstLetterFromName(profile.PRIMEIRO_NOME) }}
+                    </span>
+                    <span class="w-full h-[25%] mt-2 flex justify-center items-center text-black text-[23px] font-nunito font-[600]">
+                        {{ profile.PRIMEIRO_NOME + " " + profile.SOBRENOME }}
+                    </span>
+                </div>
             </div>
-            <div @click="OpenCadastraProfile()" class="w-[270px] h-[300px] flex flex-col justify-center items-center"><!-- border-2 para debuggar outer box -->
+            <div @click="OpenCadastraProfile()" class="w-[270px] h-[300px] flex flex-col justify-center items-center relative"><!-- border-2 para debuggar outer box -->
                 <div class="w-[260px] h-[290px] flex flex-col justify-center items-center rounded-2xl bg-white rounded-2xl
                 shadow-black cursor-pointer
                 hover:shadow-[0_35px_40px_-15px_rgba(0,0,0,0.9)]
@@ -116,6 +156,7 @@ console.log(Profiles)
 
         <!-- Criar Profile Page -->
         <div v-if="ProfileStateNow == 'CadastraProfiles'" class="w-[70%] h-[80%] flex flex-col justify-center items-center bg-white">
+            <span @click="CloseCadastraProfile()" class="absolute top-4 right-6 h-[50px] w-[50px] flex justify-center items-center text-black text-[32px] font-nunito font-[800] cursor-pointer"> X </span>
             <span class="w-full h-[70px] flex justify-center items-center font-lexend text-[32px] font-[500] tracking-tight"> Cadastrar Perfil </span>
             <div class="w-[500px] h-[570px] flex  flex-col justify-center items-center rounded-xl border-2 border-grey font-nunito">
                 <span class="w-[380px] h-auto text-[19px]"> Primeiro Nome: </span>
