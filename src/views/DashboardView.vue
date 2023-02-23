@@ -5,6 +5,7 @@ import ClipLoader from "vue-spinner/src/ClipLoader.vue"
 import axios from "axios";
 import $ from 'jquery';
 import { LoadingPinia } from "../stores/LoadingPinia";
+import { SelectedProfilePinia } from "../stores/SelectProfilePinia";
 import { RouterLink, RouterView } from "vue-router";
 import DashboardHeader from "../components/DashboardHeader.vue";
 import DashboardNav from "../components/DashboardNav.vue";
@@ -79,8 +80,74 @@ function GetFirstLetterFromName($name) {
 
 }
 
+const ProfileLoginBoxAbertos = ref([]);
+const IsAnyProfileLoginBoxAberto = ref(false);
 
 
+function CloseProfileLoginBox() {
+
+    ProfileLoginBoxAbertos.value.forEach(div => {
+            div.css("animation","CloseProfileLoginBox 0.3s");
+            div.css("top","0%");
+        });
+    ProfileLoginBoxAbertos.value = [];
+
+}
+
+function OpenProfileLoginBox(e) {
+
+    if ( ProfileLoginBoxAbertos.value.length > 0 ) {
+        CloseProfileLoginBox();
+    }
+
+    $(e.currentTarget).find("#ProfileBoxLogin").css("animation","OpenProfileLoginBox 0.3s");
+    $(e.currentTarget).find("#ProfileBoxLogin").css("top","55%");
+    ProfileLoginBoxAbertos.value.push($(e.currentTarget).find("#ProfileBoxLogin"));
+    
+}
+
+// Pega o input password do profile aberto, botao entrar clickado
+function ProfileLogIn(e) {
+
+    Loading.isLoading = true;
+
+    let PROFILE_ID = $(e.currentTarget).attr('id');
+    let ProfileSenhaInput = $(e.currentTarget).siblings('input').val();
+
+    axios.get(`https://api.cognicenter.com.br/Auth.php?profile_id=${PROFILE_ID}`, {
+    params: {
+        senha_profile: ProfileSenhaInput
+    },                      
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }).then( (response) => {
+
+        if ( response.data["code"] == "1" ) {
+
+            Profiles.value.forEach(i => {
+                
+                if ( i.PROFILE_ID == PROFILE_ID ) {
+                    SelectedProfile.Profile_ID = i.PROFILE_ID;
+                    SelectedProfile.Profile_FirstName = i.PRIMEIRO_NOME;
+                }
+
+            });
+
+            DashboardStateNow.value = 'Dashboard';
+
+            Loading.isLoading = false;
+            
+        } else if ( response.data == "0" ) {
+
+        } else if ( response.data == "-1" ) {
+
+        }
+
+    })
+
+}
+
+
+const SelectedProfile = SelectedProfilePinia();
 const Loading = LoadingPinia();
 
 //Loading.isLoading = false;
@@ -102,13 +169,7 @@ const DashboardStateNow = ref('Perfil');
 const ProfileStates = ['MostraProfiles','CadastraProfiles'];
 const ProfileStateNow = ref('MostraProfiles');
 
-/*onMounted(() => {
-    
-    var arr = Profiles.value;
-    console.log(Object.keys(arr));
 
-
-});*/
 
 //console.log(Profiles)
 
@@ -128,16 +189,23 @@ const ProfileStateNow = ref('MostraProfiles');
         <!-- Profiles Container -->
         <div v-if="ProfileStateNow == 'MostraProfiles'" class="w-[90%] h-[400px] flex flex-row justify-center items-start">
             <!-- Perfil Box -->
-            <div v-for="profile in Profiles" class="w-[270px] h-[300px] mr-8 flex flex-col rounded-2xl bg-white cursor-pointer">
+            <div @click="OpenProfileLoginBox" v-for="profile in Profiles" class="w-[270px] h-[300px] mr-8 flex flex-col rounded-lg bg-white cursor-pointer relative">
                 <!-- Foto + First name Container -->
-                <div class="w-full h-[55%] pt-2 flex flex-col items-center justify-center">
-                    <span :id="`Profile${profile.PROFILE_ID}`" v-bind:style="{'background-color': profile.COR_PROFILE}" class="w-[47%] h-[64%] flex justify-center
-                    items-center bg-white rounded-[50%] text-white text-[39px] font-nunito font-[800]">
+                <div class="w-full h-[55%] pt-2 flex flex-col items-center justify-center bg-white rounded-lg z-10">
+                    <span :id="`Profile${profile.PROFILE_ID}`" v-bind:style="{'background-color': profile.COR_PROFILE}" class="w-[43%] h-[63%] flex justify-center
+                    items-center pt-[4px] pr-[1px] bg-white rounded-[50%] text-white text-[39px] font-nunito font-[800]">
                         {{ GetFirstLetterFromName(profile.PRIMEIRO_NOME) }}
                     </span>
                     <span class="w-full h-[25%] mt-2 flex justify-center items-center text-black text-[23px] font-nunito font-[600]">
                         {{ profile.PRIMEIRO_NOME + " " + profile.SOBRENOME }}
                     </span>
+                </div>
+                <!-- Senha Input + Login Botao Container -->
+                <div id="ProfileBoxLogin" class="w-full h-[45%] flex flex-col justify-items items-center bg-white rounded-lg absolute top-[0%] z-0">
+                    <span class="w-full h-auto flex items-center pl-6 text-[16px] font-[500] font-nunito tracking-tighter"> Senha do perfil: </span>
+                    <input type="password" class="w-[216px] h-[31px] border-[1px] border-black opacity-50 outline-0 pl-[1px] mb-4">
+                    <div :id="profile.PROFILE_ID" @click="ProfileLogIn" class="w-[216px] h-[40px] flex justify-center items-center bg-[#FF4365] text-white
+                    text-[19px] font-[600] font-nunito tracking-tight cursor-pointer"> Entrar </div>
                 </div>
             </div>
             <div @click="OpenCadastraProfile()" class="w-[270px] h-[300px] flex flex-col justify-center items-center relative"><!-- border-2 para debuggar outer box -->

@@ -31,3 +31,14 @@
     from {left: 0%;}
     to {left: 100%;}
 }
+
+
+/* Dashboard Animations */
+@keyframes OpenProfileLoginBox {
+    from {top: 0%;}
+    to {top: 55%;}
+}
+@keyframes CloseProfileLoginBox {
+    from {top: 55%;}
+    top {top: 0%;}
+}

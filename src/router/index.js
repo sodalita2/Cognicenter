@@ -33,6 +33,7 @@ const router = createRouter({
       children: [
         {
           path: '',
+          name: 'DashboardHome',
           component: () => import('../views/TesteView.vue'),
         }
       ],
