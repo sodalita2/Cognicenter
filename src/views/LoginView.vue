@@ -1,5 +1,5 @@
 <script setup>
-import { ref, VueElement, watch } from "vue";
+import { ref, VueElement, watch, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ClipLoader from "vue-spinner/src/ClipLoader.vue";
 import axios from "axios";
@@ -52,7 +52,7 @@ function Login() {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).then( (response) => {
 
-        if ( SalvarEmailCheckbox.checked && !$cookies.isKey("savedEmail") ) {
+        if ( SalvarEmailCheckbox.value.checked && !$cookies.isKey("savedEmail") ) {
             $cookies.set('savedEmail', loginEmail.value.value);
         }
 
@@ -93,13 +93,17 @@ function Login() {
 //const $cookies = inject('$cookies');
 //console.log($cookies.isKey('sessionToken'));
 
+onMounted( () => {
+
+    // CHECAGENS AFTER RENDER
+    if ( $cookies.isKey("savedEmail") ) {
+        loginEmail.value.value = $cookies.get("savedEmail");
+        SalvarEmailCheckbox.value.checked = true;
+    }
 
 
+});
 
-// CHECAGENS PRE RENDER
-if ( $cookies.isKey("savedEmail") ) {
-    loginEmail.value.value = $cookies.get("savedEmail");
-}
 
 
 
