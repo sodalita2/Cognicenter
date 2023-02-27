@@ -1,11 +1,11 @@
 <script setup>
-import { ref, VueElement } from "vue";
+import { ref, VueElement, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import ClipLoader from "vue-spinner/src/ClipLoader.vue"
+import ClipLoader from "vue-spinner/src/ClipLoader.vue";
 import axios from "axios";
 import { LoadingPinia } from "../stores/LoadingPinia";
-
-
+import ToastMessage from "../components/ToastMessage.vue";
+import $ from 'jquery';
 
 
 
@@ -20,6 +20,16 @@ const router = useRouter();
 
 const SalvarEmailCheckbox = ref(null);
 
+// TOAST    #####################
+const toast = ref(null);
+const ToastOptions = ref({
+    title: "",
+    message: "",
+    type: "",
+    stayOnScreen: true,
+});
+const ToastShow = ref(false);
+// ################################
 
 const EsqueciMinhaSenhaOpen = ref(false);
 
@@ -30,6 +40,8 @@ function EsqueciSenhaToggle() {
 
 
 function Login() {
+
+    Loading.isLoading = true;
 
 // Implementar filtro de input **
 
@@ -47,12 +59,29 @@ function Login() {
         if ( response.data["code"] == "1" ) {
             $cookies.set('sessionToken', response.data["token"]);
             $cookies.set('userID', response.data["userID"]);
-            Loading.isLoading = true;
             router.push({path: '/dashboard'});
         } else if ( response.data == "0" ) {
-
+            Loading.isLoading = false;
+            ToastOptions.value.title = "Aviso";
+            ToastOptions.value.message = "Senha incorreta!";
+            ToastOptions.value.type = "alert";
+            ToastOptions.value.stayOnScreen = false;
+            $(toast.value).css("animation", "ToastFlyIntoScreen 0.4s");
+            ToastShow.value = true;
+            setTimeout(() => {
+                ToastShow.value = false;
+            }, 3000);
         } else if ( response.data == "-1" ) {
-
+            Loading.isLoading = false;
+            ToastOptions.value.title = "Aviso";
+            ToastOptions.value.message = "Email não cadastrado!";
+            ToastOptions.value.type = "alert";
+            ToastOptions.value.stayOnScreen = false;
+            $(toast.value).css("animation", "ToastFlyIntoScreen 0.4s");
+            ToastShow.value = true;
+            setTimeout(() => {
+                ToastShow.value = false;
+            }, 3000);
         }
 
     })
@@ -72,14 +101,17 @@ if ( $cookies.isKey("savedEmail") ) {
     loginEmail.value.value = $cookies.get("savedEmail");
 }
 
+
+
 </script>
 
 <template>
 
     <!-- Wrapper -->
-    <div class="w-[100vw] h-full min-h-[600px] bg-[#F3F0F0] flex justify-center items-center shadow-headerShadow overflow-hidden">
-        <!-- Loading Layer -->
-         
+    <div class="w-[100vw] h-full min-h-[600px] bg-[#F3F0F0] flex justify-center items-center shadow-headerShadow overflow-hidden relative">
+        <!-- Toast Container -->
+        <ToastMessage ref="toast" v-if="ToastShow" :title="ToastOptions.title" :message="ToastOptions.message" :type="ToastOptions.type" :stay-on-screen="ToastOptions.stayOnScreen" />
+
 
         
         <!-- Form Container -->

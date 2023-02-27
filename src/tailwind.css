@@ -42,3 +42,11 @@
     from {top: 55%;}
     top {top: 0%;}
 }
+
+
+
+/* Toast Animations */
+@keyframes ToastFlyIntoScreen {
+    from {top: 0;}
+    to {top: 40px;}
+}
