@@ -1,6 +1,6 @@
 ## CogniCenter
 
-Uma plataforma de jogos para exercícios cognitivos, esse é meu projeto de TCC da Universidade Federal Fluminense.
+Uma plataforma de jogos para exercícios cognitivos, esse foi meu tema de TCC da Universidade Federal Fluminense.
 
 Essa é a versão 2.0, que incrementa o trabalho inicial, adicionando sistema de login, dashboard de controle para uso
 de profissionais de saúde.
