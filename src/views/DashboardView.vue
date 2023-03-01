@@ -8,7 +8,6 @@ import { LoadingPinia } from "../stores/LoadingPinia";
 import { SelectedProfilePinia } from "../stores/SelectProfilePinia";
 import { RouterLink, RouterView } from "vue-router";
 import DashboardHeader from "../components/DashboardHeader.vue";
-import DashboardNav from "../components/DashboardNav.vue";
 
 
 function LoadProfiles() {
@@ -251,7 +250,6 @@ const ProfileStateNow = ref('MostraProfiles');
         <DashboardHeader/>
         <!-- View de Navegacao Container -->
         <div class="w-full flex flex-1 flex-row">
-            <DashboardNav/>
             <RouterView/>
         </div>
     </div>

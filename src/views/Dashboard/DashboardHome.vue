@@ -7,5 +7,5 @@
     <div class="flex flex-1 bg-[green]">
         
     </div>
-
+    
 </template>
