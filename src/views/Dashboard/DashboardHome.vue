@@ -1,5 +1,12 @@
 <script setup>
+import { RouterLink, RouterView } from "vue-router";
+import { ref, VueElement, onMounted, toRaw } from "vue";
+import { LoadingPinia } from '../../stores/LoadingPinia';
 
+
+const Loading = LoadingPinia();
+
+Loading.isLoading = false;
 </script>
 
 <template>

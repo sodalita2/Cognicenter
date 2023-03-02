@@ -20,14 +20,19 @@ const SelectedProfile = SelectedProfilePinia();
         <div class="ml-4 h-full w-[80px] flex justify-center items-center">
             <img src="/Logo.png" class="w-[65px] h-[27px]">
         </div>
-        <RouterLink to="" class="ml-14 relative group w-[140px] h-full flex justify-center items-center text-[21px]
+        <RouterLink to="/dashboard" class="ml-14 relative group w-[140px] h-full flex justify-center items-center text-[21px]
         text-black font-lexend font-[400] tracking-tight"> 
             Dashboard 
             <div class="absolute bottom-0 w-full h-[3px] bg-[#FF4365] hidden group-hover:flex"></div>
         </RouterLink>
-        <RouterLink to="" class="ml-14 relative group w-[140px] h-full flex justify-center items-center text-[21px]
+        <RouterLink to="/dashboard/pacientes" class="ml-14 relative group w-[140px] h-full flex justify-center items-center text-[21px]
         text-black font-lexend font-[400] tracking-tight"> 
             Pacientes
+            <div class="absolute bottom-0 w-full h-[3px] bg-[#FF4365] hidden group-hover:flex"></div>
+        </RouterLink>
+        <RouterLink to="/dashboard/calendario" class="ml-14 relative group w-[140px] h-full flex justify-center items-center text-[21px]
+        text-black font-lexend font-[400] tracking-tight"> 
+            Calendário
             <div class="absolute bottom-0 w-full h-[3px] bg-[#FF4365] hidden group-hover:flex"></div>
         </RouterLink>
 
